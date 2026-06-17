@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.37314.3 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cts-twister-api", "cts-twister-api.csproj", "{E7E04692-0CA6-45CE-8A50-F14BA75F8A72}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E7E04692-0CA6-45CE-8A50-F14BA75F8A72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7E04692-0CA6-45CE-8A50-F14BA75F8A72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7E04692-0CA6-45CE-8A50-F14BA75F8A72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7E04692-0CA6-45CE-8A50-F14BA75F8A72}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {43C420F7-E00D-4187-8DBB-5D9E169473AE}
+	EndGlobalSection
+EndGlobal
