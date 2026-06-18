@@ -6,7 +6,7 @@ using static cts_twister_api.common.ResEnumerators;
 
 namespace cts_twister_api.handler
 {
-    public class TwisterHandler
+    public class SesionHandler
     {
         public static async Task<MDResponse<int>> GetValidateSesion(string id_plant, string id_machine, string con)
         {

@@ -16,7 +16,7 @@ namespace cts_twister_api.defs
 
             mgSesion.MapGet("/GetValidateSesion", async (string id_plant, string id_machine) =>
             {
-                return await TwisterHandler.GetValidateSesion(id_plant, id_machine, conDB_TwisterSystem);
+                return await SesionHandler.GetValidateSesion(id_plant, id_machine, conDB_TwisterSystem);
             });
             #endregion
 
@@ -43,6 +43,33 @@ namespace cts_twister_api.defs
 
                 return await ShiftHandler.PostStartShift(data, hostInfo, conDB_TwisterSystem);
             });
+
+
+            #endregion
+
+            #region MapGroup Production
+            var mgProduction = app.MapGroup("/api/production").WithTags("Production");
+
+            mgProduction.MapGet("/GetHourByHourReportByMachine", async (string shift, string station, string plant) =>
+            {
+                return await ProductionHandler.GetHourByHourReportByMachine(shift, station, plant, conDB_TwisterSystem);
+            });
+
+            mgProduction.MapGet("/GetHourKPIByMachine", async ( string station, string plant) =>
+            {
+                return await ProductionHandler.GetHourKPIByMachine( station, plant, conDB_TwisterSystem);
+            });
+
+            #endregion
+
+            #region MapGroup Kanban
+            var mgKanban = app.MapGroup("/api/kanban").WithTags("Kanban");
+
+            mgKanban.MapGet("/GetKanbanInfo", async (string serial_tadiff) =>
+            {
+                return await KanbanHandler.GetKanbanInfo(serial_tadiff, conDB_TwisterSystem);
+            });
+
 
 
             #endregion
