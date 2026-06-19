@@ -1,6 +1,7 @@
 ﻿using cts_twister_api.baseproject;
 using cts_twister_api.common;
 using cts_twister_api.handler;
+using cts_twister_api.model.production;
 using cts_twister_api.model.shift;
 
 namespace cts_twister_api.defs
@@ -55,9 +56,16 @@ namespace cts_twister_api.defs
                 return await ProductionHandler.GetHourByHourReportByMachine(shift, station, plant, conDB_TwisterSystem);
             });
 
-            mgProduction.MapGet("/GetHourKPIByMachine", async ( string station, string plant) =>
+            mgProduction.MapGet("/GetHourKPIByMachine", async (string station, string plant) =>
             {
-                return await ProductionHandler.GetHourKPIByMachine( station, plant, conDB_TwisterSystem);
+                return await ProductionHandler.GetHourKPIByMachine(station, plant, conDB_TwisterSystem);
+            });
+
+            mgProduction.MapPost("/", async (MDProduction data, HttpContext httpContext) =>
+            {
+                var hostInfo = ResHost.GetHostInfo(httpContext);
+
+                return await ProductionHandler.PostProduction(data, hostInfo, conDB_TwisterSystem);
             });
 
             #endregion
@@ -70,7 +78,20 @@ namespace cts_twister_api.defs
                 return await KanbanHandler.GetKanbanInfo(serial_tadiff, conDB_TwisterSystem);
             });
 
+            #endregion
 
+            #region MapGroup Esquematico
+            var mgEsquematico = app.MapGroup("/api/esquematico").WithTags("Esquematico");
+
+            mgEsquematico.MapGet("/GetEsquematicoInfo", async (string esquematico_name) =>
+            {
+                return await EsquematicoHandler.GetEsquematicoInfo(esquematico_name, conDB_TwisterSystem);
+            });
+
+            mgEsquematico.MapGet("/GetAdjustment", async (string esquematico_name, string station, string plant) =>
+            {
+                return await EsquematicoHandler.GetAdjustment(esquematico_name, station, plant, conDB_TwisterSystem);
+            });
 
             #endregion
 

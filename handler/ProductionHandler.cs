@@ -1,6 +1,7 @@
 ﻿using cts_twister_api.model;
 using cts_twister_api.model.employee;
 using cts_twister_api.model.production;
+using cts_twister_api.model.shift;
 using Dapper;
 using Microsoft.Data.SqlClient;
 using System.Data;
@@ -91,6 +92,53 @@ namespace cts_twister_api.handler
                 }
             }
             return res;
+        }
+
+        public static async Task<MDResponse<int>> PostProduction(MDProduction data, MDHostInfo hostInfo, string con)
+        {
+            var response = new MDResponse<int>();
+            var connection = new SqlConnection(con);
+            try
+            {
+                using (connection)
+                {
+                    var prms = new DynamicParameters();
+
+                    prms.Add("@caja", data.Box);
+                    prms.Add("@shift", data.Shift);
+                    prms.Add("@station", data.Station);
+                    prms.Add("@plant", data.Plant);
+                    prms.Add("@employeeNo", data.EmployeeNo);
+
+                    prms.Add("@hostIp", hostInfo.HostIp);
+                    prms.Add("@hostName", hostInfo.HostName);
+
+                    prms.Add("@result", dbType: DbType.String, direction: ParameterDirection.Output, size: 5215585);
+                    prms.Add("@message", dbType: DbType.String, direction: ParameterDirection.Output, size: 5215585);
+
+                    int scopeId = await connection.QueryFirstOrDefaultAsync<int>("Sp_TWNV_PRODUCTION_INSERT_PRODUCTION", prms, commandType: CommandType.StoredProcedure);
+
+                    _ = Enum.TryParse(prms.Get<string>("@result"), out ResultResponse result);
+
+                    response.Result = result;
+                    response.Message = prms.Get<string>("@message");
+                    response.Data = scopeId;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Result = ResultResponse.error_exception;
+                response.Message = ex.Message;
+            }
+            finally
+            {
+                if (connection.State != ConnectionState.Closed)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+            }
+            return response;
         }
     }
 }
