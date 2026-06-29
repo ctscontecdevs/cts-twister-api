@@ -35,6 +35,7 @@ namespace cts_twister_api.handler
                     {
                         data.Kanban = await responseSql.ReadFirstOrDefaultAsync<MDKanban>();
                         data.CircuitDetailList = (await responseSql.ReadAsync<MDCuircuitDetail>()).ToList();
+                        data.StripLenght = await responseSql.ReadFirstOrDefaultAsync<MDStripLenght>();
                         res.Data = data;
                     }
                 }

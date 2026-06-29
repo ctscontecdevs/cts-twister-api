@@ -4,5 +4,7 @@
     {
         public MDKanban Kanban { get; set; }
         public List<MDCuircuitDetail> CircuitDetailList { get; set; }
+        public MDStripLenght StripLenght { get; set; }
+
     }
 }
