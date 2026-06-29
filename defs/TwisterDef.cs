@@ -78,6 +78,11 @@ namespace cts_twister_api.defs
                 return await KanbanHandler.GetKanbanInfo(serial_tadiff, conDB_TwisterSystem);
             });
 
+            mgKanban.MapGet("/GetKanbanCircuitInfo", async (string serial_tadiff) =>
+            {
+                return await KanbanHandler.GetKanbanCircuitInfo(serial_tadiff, conDB_TwisterSystem);
+            });
+
             #endregion
 
             #region MapGroup Esquematico
