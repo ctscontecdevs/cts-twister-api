@@ -1,6 +1,7 @@
 ﻿using cts_twister_api.baseproject;
 using cts_twister_api.common;
 using cts_twister_api.handler;
+using cts_twister_api.model.configuration;
 using cts_twister_api.model.production;
 using cts_twister_api.model.shift;
 
@@ -101,7 +102,7 @@ namespace cts_twister_api.defs
 
             #endregion
 
-            #region MapGroup machine
+            #region MapGroup Machine
             var mgMachine = app.MapGroup("/api/machine").WithTags("Machine");
 
             mgMachine.MapGet("/GetMachineTypes", async () =>
@@ -109,10 +110,27 @@ namespace cts_twister_api.defs
                 return await MachineHandler.GetMachineTypes(conDB_TwisterSystem);
             });
 
-            //mgMachine.MapGet("/GetAdjustment", async (string esquematico_name, string station, string plant) =>
-            //{
-            //    return await MachineHandler.GetAdjustment(esquematico_name, station, plant, conDB_TwisterSystem);
-            //});
+            mgMachine.MapGet("/GetMachineByType", async (int id_machine_type) =>
+            {
+                return await MachineHandler.GetMachineByType(id_machine_type,conDB_TwisterSystem);
+            });
+
+            #endregion
+
+            #region MapGroup Configuration
+            var mgConfiguration = app.MapGroup("/api/configuration").WithTags("Configuration");
+
+            mgConfiguration.MapGet("/GetConfiguration", async (string machine_identifier) =>
+            {
+                return await ConfigurationHandler.GetConfiguration(machine_identifier,conDB_TwisterSystem);
+            });
+
+            mgConfiguration.MapPost("/", async (MDMachineConfiguration data, HttpContext httpContext) =>
+            {
+                var hostInfo = ResHost.GetHostInfo(httpContext);
+
+                return await ConfigurationHandler.PostMachineConfiguration(data, hostInfo, conDB_TwisterSystem);
+            });
 
             #endregion
 
