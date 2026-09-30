@@ -2,6 +2,6 @@
 {
     public interface IEndpointDefinition
     {
-        void RegisterEndpoints(WebApplication app);
+        void RegisterEndpoints(WebApplication app,string connectionString);
     }
 }

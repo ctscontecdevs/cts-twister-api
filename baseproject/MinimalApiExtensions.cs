@@ -2,7 +2,7 @@
 {
     public static class MinimalApiExtensions
     {
-        public static void RegisterEndpointDefinitions(this WebApplication app)
+        public static void RegisterEndpointDefinitions(this WebApplication app, string connectionString)
         {
             var endpointDefinitions = typeof(Program).Assembly
                 .GetTypes()
@@ -12,7 +12,7 @@
 
             foreach (var endpointdef in endpointDefinitions)
             {
-                endpointdef.RegisterEndpoints(app);
+                endpointdef.RegisterEndpoints(app, connectionString);
             }
         }
     }

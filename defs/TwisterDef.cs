@@ -8,9 +8,10 @@ namespace cts_twister_api.defs
 {
     public class TwisterDef : IEndpointDefinition
     {
-        public void RegisterEndpoints(WebApplication app)
+        public void RegisterEndpoints(WebApplication app, string connectionString)
         {
-            var conDB_TwisterSystem = app.Configuration.GetConnectionString("conDB_TwisterSystem");
+
+            var conDB_TwisterSystem = connectionString;
 
             #region MapGroup Sesion
             var mgSesion = app.MapGroup("/api/sesion").WithTags("Sesion");
@@ -97,6 +98,21 @@ namespace cts_twister_api.defs
             {
                 return await EsquematicoHandler.GetAdjustment(esquematico_name, station, plant, conDB_TwisterSystem);
             });
+
+            #endregion
+
+            #region MapGroup machine
+            var mgMachine = app.MapGroup("/api/machine").WithTags("Machine");
+
+            mgMachine.MapGet("/GetMachineTypes", async () =>
+            {
+                return await MachineHandler.GetMachineTypes(conDB_TwisterSystem);
+            });
+
+            //mgMachine.MapGet("/GetAdjustment", async (string esquematico_name, string station, string plant) =>
+            //{
+            //    return await MachineHandler.GetAdjustment(esquematico_name, station, plant, conDB_TwisterSystem);
+            //});
 
             #endregion
 
