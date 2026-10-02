@@ -89,5 +89,53 @@ namespace cts_twister_api.handler
             }
             return res;
         }
+
+        public static async Task<MDResponse<int>> PostAdjustment(MDAjustment data, MDHostInfo hostInfo, string con)
+        {
+            var response = new MDResponse<int>();
+            var connection = new SqlConnection(con);
+            try
+            {
+                using (connection)
+                {
+                    var prms = new DynamicParameters();
+
+                    prms.Add("@idMachine", data.IdMachine);
+                    prms.Add("@esquematico", data.Esquematico);
+                    prms.Add("@longitudCable", data.Longitud);
+                    prms.Add("@retorno", data.Retorno);
+                    prms.Add("@vueltas", data.Vueltas);
+                    prms.Add("@reversa", data.Reversa);
+
+                    prms.Add("@hostIp", hostInfo.HostIp);
+                    prms.Add("@hostName", hostInfo.HostName);
+
+                    prms.Add("@result", dbType: DbType.String, direction: ParameterDirection.Output, size: 5215585);
+                    prms.Add("@message", dbType: DbType.String, direction: ParameterDirection.Output, size: 5215585);
+
+                    int scopeId = await connection.QueryFirstOrDefaultAsync<int>("Sp_TWNV_ESQUEMATICO_INSERT_ADJUSTMENT", prms, commandType: CommandType.StoredProcedure);
+
+                    _ = Enum.TryParse(prms.Get<string>("@result"), out ResultResponse result);
+
+                    response.Result = result;
+                    response.Message = prms.Get<string>("@message");
+                    response.Data = scopeId;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Result = ResultResponse.error_exception;
+                response.Message = ex.Message;
+            }
+            finally
+            {
+                if (connection.State != ConnectionState.Closed)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+            }
+            return response;
+        }
     }
 }

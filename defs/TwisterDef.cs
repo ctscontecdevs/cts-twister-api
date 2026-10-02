@@ -2,6 +2,7 @@
 using cts_twister_api.common;
 using cts_twister_api.handler;
 using cts_twister_api.model.configuration;
+using cts_twister_api.model.esquematico;
 using cts_twister_api.model.production;
 using cts_twister_api.model.shift;
 
@@ -98,6 +99,12 @@ namespace cts_twister_api.defs
             mgEsquematico.MapGet("/GetAdjustment", async (string esquematico_name, string station, string plant) =>
             {
                 return await EsquematicoHandler.GetAdjustment(esquematico_name, station, plant, conDB_TwisterSystem);
+            });
+
+            mgEsquematico.MapPost("/", async (MDAjustment data, HttpContext httpContext) =>
+            {
+                var hostInfo = ResHost.GetHostInfo(httpContext);
+                return await EsquematicoHandler.PostAdjustment(data, hostInfo, conDB_TwisterSystem);
             });
 
             #endregion

@@ -1,6 +1,8 @@
-﻿namespace cts_twister_api.model.esquematico
+﻿using cts_twister_api.model.configuration;
+
+namespace cts_twister_api.model.esquematico
 {
-    public class MDAjustment
+    public class MDAjustment: MDMachineConfigurationDetail
     {
         public string Esquematico { get; set; }
         public string Longitud { get; set; }
