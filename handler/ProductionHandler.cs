@@ -140,5 +140,57 @@ namespace cts_twister_api.handler
             }
             return response;
         }
+
+        public static async Task<MDResponse<int>> ProductionDetail(MDProductionDetail data, MDHostInfo hostInfo, string con)
+        {
+            var response = new MDResponse<int>();
+            var connection = new SqlConnection(con);
+            try
+            {
+                using (connection)
+                {
+                    var prms = new DynamicParameters();
+
+                    prms.Add("@idMachine", data.IdMachine);
+                    prms.Add("@shift", data.Shift);
+                    prms.Add("@employeeNo", data.EmployeeNo);
+                    prms.Add("@idBox", data.IdBox);
+                    prms.Add("@esquematicoName", data.EsquematicoName);
+                    prms.Add("@pieces", data.Pieces);
+                    prms.Add("@length", data.Length);
+                    prms.Add("@pitch", data.Pitch);
+                    prms.Add("@lengthInit", data.Length_ini);
+                    prms.Add("@lengthInitNotTw", data.Length_ini_not_twister);
+
+                    prms.Add("@hostIp", hostInfo.HostIp);
+                    prms.Add("@hostName", hostInfo.HostName);
+
+                    prms.Add("@result", dbType: DbType.String, direction: ParameterDirection.Output, size: 5215585);
+                    prms.Add("@message", dbType: DbType.String, direction: ParameterDirection.Output, size: 5215585);
+
+                    int scopeId = await connection.QueryFirstOrDefaultAsync<int>("Sp_TWNV_PRODUCTION_INSERT_PRODUCTION_DETAIL", prms, commandType: CommandType.StoredProcedure);
+
+                    _ = Enum.TryParse(prms.Get<string>("@result"), out ResultResponse result);
+
+                    response.Result = result;
+                    response.Message = prms.Get<string>("@message");
+                    response.Data = scopeId;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Result = ResultResponse.error_exception;
+                response.Message = ex.Message;
+            }
+            finally
+            {
+                if (connection.State != ConnectionState.Closed)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+            }
+            return response;
+        }
     }
 }

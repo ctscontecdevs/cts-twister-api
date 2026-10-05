@@ -71,6 +71,13 @@ namespace cts_twister_api.defs
                 return await ProductionHandler.PostProduction(data, hostInfo, conDB_TwisterSystem);
             });
 
+            mgProduction.MapPost("/ProductionDetail", async (MDProductionDetail data, HttpContext httpContext) =>
+            {
+                var hostInfo = ResHost.GetHostInfo(httpContext);
+                return await ProductionHandler.ProductionDetail(data, hostInfo, conDB_TwisterSystem);
+            });
+
+
             #endregion
 
             #region MapGroup Kanban
