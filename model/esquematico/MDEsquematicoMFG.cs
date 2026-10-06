@@ -2,7 +2,7 @@
 {
     public class MDEsquematicoMFG
     {
-        public int MachienId { get; set; }
+        public int MachineId { get; set; }
         public string Box { get; set; }
         public string MRT { get; set; }
         public string Qty { get; set; }

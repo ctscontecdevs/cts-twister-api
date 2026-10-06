@@ -148,7 +148,7 @@ namespace cts_twister_api.handler
                 {
                     var prms = new DynamicParameters();
 
-                    prms.Add("@machineId", data.MachienId);
+                    prms.Add("@machineId", data.MachineId);
                     prms.Add("@longFin", data.FinalLenght);
                     prms.Add("@pitch", data.Pitch);
                     prms.Add("@esquematicoName", data.EsquematicoName);
@@ -195,7 +195,7 @@ namespace cts_twister_api.handler
                 {
                     var prms = new DynamicParameters();
 
-                    prms.Add("@machineId", data.MachienId);
+                    prms.Add("@machineId", data.MachineId);
                     prms.Add("@box", data.Box);
                     prms.Add("@mrt", data.MRT);
                     prms.Add("@qty", data.Qty);

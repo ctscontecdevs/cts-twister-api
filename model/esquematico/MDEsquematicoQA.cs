@@ -2,7 +2,7 @@
 {
     public class MDEsquematicoQA
     {
-        public int MachienId { get; set; }
+        public int MachineId { get; set; }
         public string FinalLenght { get; set; }
         public string Pitch { get; set; }
         public string EsquematicoName { get; set; }
