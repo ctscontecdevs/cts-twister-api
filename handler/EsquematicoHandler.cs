@@ -137,5 +137,101 @@ namespace cts_twister_api.handler
             }
             return response;
         }
+
+        public static async Task<MDResponse<int>> PutEsquematicoQA(MDEsquematicoQA data, string con)
+        {
+            var response = new MDResponse<int>();
+            var connection = new SqlConnection(con);
+            try
+            {
+                using (connection)
+                {
+                    var prms = new DynamicParameters();
+
+                    prms.Add("@machineId", data.MachienId);
+                    prms.Add("@longFin", data.FinalLenght);
+                    prms.Add("@pitch", data.Pitch);
+                    prms.Add("@esquematicoName", data.EsquematicoName);
+                    prms.Add("@areaST", data.AreaST);
+                    prms.Add("@areaSTB", data.AreaSTB);
+                    prms.Add("@box", data.Box);
+                    prms.Add("@shift", data.Shift);
+
+                    prms.Add("@result", dbType: DbType.String, direction: ParameterDirection.Output, size: 5215585);
+                    prms.Add("@message", dbType: DbType.String, direction: ParameterDirection.Output, size: 5215585);
+
+                    int scopeId = await connection.QueryFirstOrDefaultAsync<int>("Sp_TWNV_ESQUEMATICO_UPD_ESQUEMATICO_QA", prms, commandType: CommandType.StoredProcedure);
+
+                    _ = Enum.TryParse(prms.Get<string>("@result"), out ResultResponse result);
+
+                    response.Result = result;
+                    response.Message = prms.Get<string>("@message");
+                    response.Data = scopeId;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Result = ResultResponse.error_exception;
+                response.Message = ex.Message;
+            }
+            finally
+            {
+                if (connection.State != ConnectionState.Closed)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+            }
+            return response;
+        }
+
+        public static async Task<MDResponse<int>> PutEsquematico(MDEsquematicoMFG data, string con)
+        {
+            var response = new MDResponse<int>();
+            var connection = new SqlConnection(con);
+            try
+            {
+                using (connection)
+                {
+                    var prms = new DynamicParameters();
+
+                    prms.Add("@machineId", data.MachienId);
+                    prms.Add("@box", data.Box);
+                    prms.Add("@mrt", data.MRT);
+                    prms.Add("@qty", data.Qty);
+                    prms.Add("@longFin", data.FinalLenght);
+                    prms.Add("@pitch", data.Pitch);
+                    prms.Add("@esquematicoName", data.EsquematicoName);
+                    prms.Add("@areaST", data.AreaST);
+                    prms.Add("@areaSTB", data.AreaSTB);
+                    prms.Add("@shift", data.Shift);
+
+                    prms.Add("@result", dbType: DbType.String, direction: ParameterDirection.Output, size: 5215585);
+                    prms.Add("@message", dbType: DbType.String, direction: ParameterDirection.Output, size: 5215585);
+
+                    int scopeId = await connection.QueryFirstOrDefaultAsync<int>("Sp_TWNV_ESQUEMATICO_UPD_CLOSE_ESQUEMATICO", prms, commandType: CommandType.StoredProcedure);
+
+                    _ = Enum.TryParse(prms.Get<string>("@result"), out ResultResponse result);
+
+                    response.Result = result;
+                    response.Message = prms.Get<string>("@message");
+                    response.Data = scopeId;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Result = ResultResponse.error_exception;
+                response.Message = ex.Message;
+            }
+            finally
+            {
+                if (connection.State != ConnectionState.Closed)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+            }
+            return response;
+        }
     }
 }

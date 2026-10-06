@@ -117,11 +117,22 @@ namespace cts_twister_api.defs
                 return await EsquematicoHandler.GetAdjustment(esquematico_name, station, plant, conDB_TwisterSystem);
             });
 
+            mgEsquematico.MapPut("/PutEsquematicoQA", async (MDEsquematicoQA data) =>
+            {
+                return await EsquematicoHandler.PutEsquematicoQA(data, conDB_TwisterSystem);
+            });
+
+            mgEsquematico.MapPut("/PutEsquematico", async (MDEsquematicoMFG data) =>
+            {
+                return await EsquematicoHandler.PutEsquematico(data, conDB_TwisterSystem);
+            });
+
             mgEsquematico.MapPost("/", async (MDAjustment data, HttpContext httpContext) =>
             {
                 var hostInfo = ResHost.GetHostInfo(httpContext);
                 return await EsquematicoHandler.PostAdjustment(data, hostInfo, conDB_TwisterSystem);
             });
+
 
             #endregion
 
@@ -135,7 +146,7 @@ namespace cts_twister_api.defs
 
             mgMachine.MapGet("/GetMachineByType", async (int id_machine_type) =>
             {
-                return await MachineHandler.GetMachineByType(id_machine_type,conDB_TwisterSystem);
+                return await MachineHandler.GetMachineByType(id_machine_type, conDB_TwisterSystem);
             });
 
             #endregion
@@ -145,7 +156,7 @@ namespace cts_twister_api.defs
 
             mgConfiguration.MapGet("/GetConfiguration", async (string machine_identifier) =>
             {
-                return await ConfigurationHandler.GetConfiguration(machine_identifier,conDB_TwisterSystem);
+                return await ConfigurationHandler.GetConfiguration(machine_identifier, conDB_TwisterSystem);
             });
 
             mgConfiguration.MapPost("/", async (MDMachineConfiguration data, HttpContext httpContext) =>
