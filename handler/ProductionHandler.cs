@@ -28,7 +28,7 @@ namespace cts_twister_api.handler
                     prms.Add("@result", dbType: DbType.String, direction: ParameterDirection.Output, size: 5215585);
                     prms.Add("@message", dbType: DbType.String, direction: ParameterDirection.Output, size: 5215585);
 
-                    List<MDHourByHourReport> data = [..(await connection.QueryAsync<MDHourByHourReport>("Sp_TWNV_PRODUCTION_GET_HOUR_BY_HOUR_REPORT_BY_MACHINE", prms, commandType: CommandType.StoredProcedure))];
+                    List<MDHourByHourReport> data = [.. (await connection.QueryAsync<MDHourByHourReport>("Sp_TWNV_PRODUCTION_GET_HOUR_BY_HOUR_REPORT_BY_MACHINE", prms, commandType: CommandType.StoredProcedure))];
 
                     _ = Enum.TryParse(prms.Get<string>("@result"), out ResultResponse result);
 
@@ -70,6 +70,49 @@ namespace cts_twister_api.handler
                     prms.Add("@message", dbType: DbType.String, direction: ParameterDirection.Output, size: 5215585);
 
                     MDKPI data = await connection.QueryFirstOrDefaultAsync<MDKPI>("Sp_TWNV_PRODUCTION_GET_KPI_BY_MACHINE", prms, commandType: CommandType.StoredProcedure);
+
+                    _ = Enum.TryParse(prms.Get<string>("@result"), out ResultResponse result);
+
+                    res.Result = result;
+                    res.Message = prms.Get<string>("@message");
+                    res.Data = data;
+                }
+            }
+            catch (Exception ex)
+            {
+                res.Result = ResultResponse.error_exception;
+                res.Message = ex.Message;
+            }
+            finally
+            {
+                if (connection.State != ConnectionState.Closed)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+            }
+            return res;
+        }
+
+
+        public static async Task<MDResponse<List<MDProductionReport>>> GetProductionReport(int machine_id, MDHostInfo hostInfo, string con)
+        {
+            var res = new MDResponse<List<MDProductionReport>>();
+            var connection = new SqlConnection(con);
+
+            try
+            {
+                using (connection)
+                {
+                    var prms = new DynamicParameters();
+                    prms.Add("@machineId", machine_id);
+                    prms.Add("@hostName", hostInfo.HostName);
+                    prms.Add("@hostIp", hostInfo.HostIp);
+
+                    prms.Add("@result", dbType: DbType.String, direction: ParameterDirection.Output, size: 5215585);
+                    prms.Add("@message", dbType: DbType.String, direction: ParameterDirection.Output, size: 5215585);
+
+                    List<MDProductionReport> data = [.. (await connection.QueryAsync<MDProductionReport>("Sp_TWNV_PRODUCTION_CREATE_PRODUCTION_REPORT", prms, commandType: CommandType.StoredProcedure))];
 
                     _ = Enum.TryParse(prms.Get<string>("@result"), out ResultResponse result);
 

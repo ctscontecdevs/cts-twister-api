@@ -61,7 +61,7 @@ namespace cts_twister_api.handler
                     var prms = new DynamicParameters();
                     prms.Add("@esquematico", esquematico_name);
                     prms.Add("@station", station);
-                    prms.Add("@plant", plant);
+                    //prms.Add("@plant", plant);
                     prms.Add("@result", dbType: DbType.String, direction: ParameterDirection.Output, size: 5215585);
                     prms.Add("@message", dbType: DbType.String, direction: ParameterDirection.Output, size: 5215585);
 

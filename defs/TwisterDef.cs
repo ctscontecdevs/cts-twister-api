@@ -5,6 +5,7 @@ using cts_twister_api.model.configuration;
 using cts_twister_api.model.esquematico;
 using cts_twister_api.model.production;
 using cts_twister_api.model.shift;
+using Microsoft.AspNetCore.Http;
 
 namespace cts_twister_api.defs
 {
@@ -63,6 +64,14 @@ namespace cts_twister_api.defs
             {
                 return await ProductionHandler.GetHourKPIByMachine(station, plant, conDB_TwisterSystem);
             });
+
+            mgProduction.MapGet("/GetProductionReport", async (int machine_id, HttpContext httpContext) =>
+            {
+                var hostInfo = ResHost.GetHostInfo(httpContext);
+
+                return await ProductionHandler.GetProductionReport(machine_id, hostInfo, conDB_TwisterSystem);
+            });
+
 
             mgProduction.MapPost("/", async (MDProduction data, HttpContext httpContext) =>
             {
