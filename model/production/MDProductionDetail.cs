@@ -9,6 +9,7 @@
         public string EsquematicoName { get; set; }
         public int Pieces { get; set; }
         public int Length { get; set; }
+        public int Length2 { get; set; }
         public int Pitch { get; set; }
         public int Length_ini { get; set; }
         public int Length_ini_not_twister { get; set; }

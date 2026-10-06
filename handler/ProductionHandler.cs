@@ -201,6 +201,7 @@ namespace cts_twister_api.handler
                     prms.Add("@esquematicoName", data.EsquematicoName);
                     prms.Add("@pieces", data.Pieces);
                     prms.Add("@length", data.Length);
+                    prms.Add("@length2", data.Length2);
                     prms.Add("@pitch", data.Pitch);
                     prms.Add("@lengthInit", data.Length_ini);
                     prms.Add("@lengthInitNotTw", data.Length_ini_not_twister);
