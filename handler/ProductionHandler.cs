@@ -236,5 +236,51 @@ namespace cts_twister_api.handler
             }
             return response;
         }
+
+        public static async Task<MDResponse<int>> PostTwisterVerified(MDTwisterVerified data, string con)
+        {
+            var response = new MDResponse<int>();
+            var connection = new SqlConnection(con);
+            try
+            {
+                using (connection)
+                {
+                    var prms = new DynamicParameters();
+
+                    prms.Add("@idMachine", data.IdMachine);
+                    prms.Add("@employeeNo", data.EmployeeNo);
+                    prms.Add("@serial", data.Serial);
+                    prms.Add("@idProceso", data.IdProcess);
+                    prms.Add("@esquematicoName", data.EsquemticoName);
+                    prms.Add("@employeeNo", data.EmployeeNo);
+
+                    prms.Add("@result", dbType: DbType.String, direction: ParameterDirection.Output, size: 5215585);
+                    prms.Add("@message", dbType: DbType.String, direction: ParameterDirection.Output, size: 5215585);
+
+                    int scopeId = await connection.QueryFirstOrDefaultAsync<int>("Sp_TWNV_PRODUCTION_INSERT_TWISTER_VERIFIED", prms, commandType: CommandType.StoredProcedure);
+
+                    _ = Enum.TryParse(prms.Get<string>("@result"), out ResultResponse result);
+
+                    response.Result = result;
+                    response.Message = prms.Get<string>("@message");
+                    response.Data = scopeId;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Result = ResultResponse.error_exception;
+                response.Message = ex.Message;
+            }
+            finally
+            {
+                if (connection.State != ConnectionState.Closed)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+            }
+            return response;
+        }
+
     }
 }

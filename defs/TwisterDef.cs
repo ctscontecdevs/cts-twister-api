@@ -85,6 +85,12 @@ namespace cts_twister_api.defs
                 return await ProductionHandler.ProductionDetail(data, hostInfo, conDB_TwisterSystem);
             });
 
+            mgProduction.MapPost("/PostTwisterVerified", async (MDTwisterVerified data) =>
+            {
+              
+                return await ProductionHandler.PostTwisterVerified(data,conDB_TwisterSystem);
+            });
+
 
             #endregion
 
