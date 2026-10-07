@@ -23,6 +23,11 @@ namespace cts_twister_api.defs
             {
                 return await SesionHandler.GetValidateSesion(id_plant, id_machine, conDB_TwisterSystem);
             });
+
+            mgSesion.MapGet("/GetValidatePassword", async (string employee_no) =>
+            {
+                return await SesionHandler.GetValidatePassword(employee_no, conDB_TwisterSystem);
+            });
             #endregion
 
             #region MapGroup Employee
@@ -87,8 +92,7 @@ namespace cts_twister_api.defs
 
             mgProduction.MapPost("/PostTwisterVerified", async (MDTwisterVerified data) =>
             {
-              
-                return await ProductionHandler.PostTwisterVerified(data,conDB_TwisterSystem);
+                return await ProductionHandler.PostTwisterVerified(data, conDB_TwisterSystem);
             });
 
 

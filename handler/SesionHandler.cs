@@ -48,5 +48,45 @@ namespace cts_twister_api.handler
             }
             return res;
         }
+
+        public static async Task<MDResponse<bool>> GetValidatePassword(string employee_no, string con)
+        {
+            var res = new MDResponse<bool>();
+            var connection = new SqlConnection(con);
+
+            try
+            {
+                using (connection)
+                {
+                    var prms = new DynamicParameters();
+                    prms.Add("@employee", employee_no);
+
+                    prms.Add("@result", dbType: DbType.String, direction: ParameterDirection.Output, size: 5215585);
+                    prms.Add("@message", dbType: DbType.String, direction: ParameterDirection.Output, size: 5215585);
+
+                    bool data = await connection.QueryFirstOrDefaultAsync<bool>("Sp_TWNV_SESION_VALIDATE_PASSWORD", prms, commandType: CommandType.StoredProcedure);
+
+                    _ = Enum.TryParse(prms.Get<string>("@result"), out ResultResponse result);
+
+                    res.Result = result;
+                    res.Message = prms.Get<string>("@message");
+                    res.Data = data;
+                }
+            }
+            catch (Exception ex)
+            {
+                res.Result = ResultResponse.error_exception;
+                res.Message = ex.Message;
+            }
+            finally
+            {
+                if (connection.State != ConnectionState.Closed)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+            }
+            return res;
+        }
     }
 }
