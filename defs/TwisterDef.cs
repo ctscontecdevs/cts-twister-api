@@ -126,12 +126,12 @@ namespace cts_twister_api.defs
                 return await EsquematicoHandler.GetAdjustment(esquematico_name, station, plant, conDB_TwisterSystem);
             });
 
-            mgEsquematico.MapPut("/PutEsquematicoQA", async (MDEsquematicoQA data) =>
+            mgEsquematico.MapPost("/PutEsquematicoQA", async (MDEsquematicoQA data) =>
             {
                 return await EsquematicoHandler.PutEsquematicoQA(data, conDB_TwisterSystem);
             });
 
-            mgEsquematico.MapPut("/PutEsquematico", async (MDEsquematicoMFG data) =>
+            mgEsquematico.MapPost("/PutEsquematico", async (MDEsquematicoMFG data) =>
             {
                 return await EsquematicoHandler.PutEsquematico(data, conDB_TwisterSystem);
             });
