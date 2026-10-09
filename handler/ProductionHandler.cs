@@ -282,5 +282,48 @@ namespace cts_twister_api.handler
             return response;
         }
 
+
+        public static async Task<MDResponse<bool>> UpdateComment(MDComment data , string con)
+        {
+            var response = new MDResponse<bool>();
+            var connection = new SqlConnection(con);
+            try
+            {
+                using (connection)
+                {
+                    var prms = new DynamicParameters();
+
+                    prms.Add("@id", data.Id);
+                    prms.Add("@comment", data.Comment);
+
+                    prms.Add("@result", dbType: DbType.String, direction: ParameterDirection.Output, size: 5215585);
+                    prms.Add("@message", dbType: DbType.String, direction: ParameterDirection.Output, size: 5215585);
+
+                    bool res = await connection.QueryFirstOrDefaultAsync<bool>("Sp_TWNV_PRODUCTION_UPD_PRODUCTION_REPORT_COMMENT", prms, commandType: CommandType.StoredProcedure);
+
+                    _ = Enum.TryParse(prms.Get<string>("@result"), out ResultResponse result);
+
+                    response.Result = result;
+                    response.Message = prms.Get<string>("@message");
+                    response.Data = res;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Result = ResultResponse.error_exception;
+                response.Message = ex.Message;
+            }
+            finally
+            {
+                if (connection.State != ConnectionState.Closed)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+            }
+            return response;
+        }
+
+
     }
 }

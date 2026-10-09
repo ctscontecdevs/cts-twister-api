@@ -77,6 +77,11 @@ namespace cts_twister_api.defs
                 return await ProductionHandler.GetProductionReport(machine_id, hostInfo, conDB_TwisterSystem);
             });
 
+            mgProduction.MapPut("/Comment", async (MDComment data ) =>
+            {              
+                return await ProductionHandler.UpdateComment(data, conDB_TwisterSystem);
+            });
+
             mgProduction.MapPost("/", async (MDProduction data, HttpContext httpContext) =>
             {
                 var hostInfo = ResHost.GetHostInfo(httpContext);
