@@ -6,6 +6,7 @@ using Dapper;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using static cts_twister_api.common.ResEnumerators;
+using static Dapper.SqlMapper;
 
 namespace cts_twister_api.handler
 {
@@ -136,6 +137,52 @@ namespace cts_twister_api.handler
             }
             return res;
         }
+
+        public static async Task<MDResponse<MDPlantProduction>> GetPlantProductionReport(DateTime report_date, string con)
+        {
+            var connection = new SqlConnection(con);
+            var response = new MDResponse<MDPlantProduction>();
+            var data = new MDPlantProduction();
+            try
+            {
+                using (connection)
+                {
+                    Settings.CommandTimeout = 0;
+                    var prms = new DynamicParameters();
+                    prms.Add("@reportDate", report_date);
+                    
+                    prms.Add("@result", dbType: DbType.String, direction: ParameterDirection.Output, size: 5215585);
+                    prms.Add("@message", dbType: DbType.String, direction: ParameterDirection.Output, size: 5215585);
+                    var res = await connection.QueryMultipleAsync("Sp_TWNV_PRODUCTION_GET_REPORT_BY_PLANT", prms, commandType: CommandType.StoredProcedure);
+
+                    _ = Enum.TryParse(prms.Get<string>("@result"), out ResultResponse result);
+
+                    if (result == ResultResponse.success)
+                    {
+                        data.PlantProductionByHours = ((List<MDPlantProductionByHour>)await res.ReadAsync<MDPlantProductionByHour>());
+                        data.PlantProductionByMachineTypes = ((List<MDPlantProductionByMachineType>)await res.ReadAsync<MDPlantProductionByMachineType>());
+                        data.PlantProductionByMachine = ((List<MDPlantProductionByMachine>)await res.ReadAsync<MDPlantProductionByMachine>());
+             
+                        response.Data = data;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Result  = ResultResponse.error_exception;
+                response.Message = ex.Message;
+            }
+            finally
+            {
+                if (connection.State != ConnectionState.Closed)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+            }
+            return response;
+        }
+
 
         public static async Task<MDResponse<int>> PostProduction(MDProduction data, MDHostInfo hostInfo, string con)
         {
@@ -283,7 +330,7 @@ namespace cts_twister_api.handler
         }
 
 
-        public static async Task<MDResponse<bool>> UpdateComment(MDComment data , string con)
+        public static async Task<MDResponse<bool>> UpdateComment(MDComment data, string con)
         {
             var response = new MDResponse<bool>();
             var connection = new SqlConnection(con);
