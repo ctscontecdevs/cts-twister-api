@@ -138,6 +138,48 @@ namespace cts_twister_api.handler
             return res;
         }
 
+        public static async Task<MDResponse<List<MDProductionReportByMachineDetail>>> GetProductionReportByDate(int machine_id, DateTime report_date, string con)
+        {
+            var res = new MDResponse<List<MDProductionReportByMachineDetail>>();
+            var connection = new SqlConnection(con);
+
+            try
+            {
+                using (connection)
+                {
+                    var prms = new DynamicParameters();
+                    prms.Add("@idMachine", machine_id);
+                    prms.Add("@reportDate", report_date);
+
+                    prms.Add("@result", dbType: DbType.String, direction: ParameterDirection.Output, size: 5215585);
+                    prms.Add("@message", dbType: DbType.String, direction: ParameterDirection.Output, size: 5215585);
+
+                    List<MDProductionReportByMachineDetail> data = [.. (await connection.QueryAsync<MDProductionReportByMachineDetail>("Sp_TWNV_PRODUCTION_GET_REPORT_BY_MACHINE", prms, commandType: CommandType.StoredProcedure))];
+
+                    _ = Enum.TryParse(prms.Get<string>("@result"), out ResultResponse result);
+
+                    res.Result = result;
+                    res.Message = prms.Get<string>("@message");
+                    res.Data = data;
+                }
+            }
+            catch (Exception ex)
+            {
+                res.Result = ResultResponse.error_exception;
+                res.Message = ex.Message;
+            }
+            finally
+            {
+                if (connection.State != ConnectionState.Closed)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+            }
+            return res;
+        }
+
+
         public static async Task<MDResponse<MDPlantProduction>> GetPlantProductionReport(DateTime report_date, string con)
         {
             var connection = new SqlConnection(con);

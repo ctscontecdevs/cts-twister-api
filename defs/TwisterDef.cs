@@ -77,6 +77,11 @@ namespace cts_twister_api.defs
                 return await ProductionHandler.GetProductionReport(machine_id, hostInfo, conDB_TwisterSystem);
             });
 
+            mgProduction.MapGet("/GetProductionReportByDate", async (int machine_id, DateTime report_date) =>
+            {
+                return await ProductionHandler.GetProductionReportByDate(machine_id, report_date, conDB_TwisterSystem);
+            });
+
             mgProduction.MapGet("/GetPlantProductionReport", async (DateTime report_date ) =>
             {
                 return await ProductionHandler.GetPlantProductionReport(report_date,  conDB_TwisterSystem);
