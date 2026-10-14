@@ -106,6 +106,11 @@ namespace cts_twister_api.defs
             });
 
 
+            mgProduction.MapPost("/PostProductionDetailTadiff", async (MDProductionSerial data) =>
+            {
+                return await ProductionHandler.PostProductionDetailTadiff(data, conDB_TwisterSystem);
+            });
+
             #endregion
 
             #region MapGroup Kanban

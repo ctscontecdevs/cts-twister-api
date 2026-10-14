@@ -8,5 +8,7 @@
         public string WireType { get; set; }
         public string WireCutLength { get; set; }
         public string General { get; set; }
+        public string LotCode { get; set; }
+        public string Serial { get; set; }
     }
 }

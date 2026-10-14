@@ -150,7 +150,7 @@ namespace cts_twister_api.handler
                     Settings.CommandTimeout = 0;
                     var prms = new DynamicParameters();
                     prms.Add("@reportDate", report_date);
-                    
+
                     prms.Add("@result", dbType: DbType.String, direction: ParameterDirection.Output, size: 5215585);
                     prms.Add("@message", dbType: DbType.String, direction: ParameterDirection.Output, size: 5215585);
                     var res = await connection.QueryMultipleAsync("Sp_TWNV_PRODUCTION_GET_REPORT_BY_PLANT", prms, commandType: CommandType.StoredProcedure);
@@ -162,14 +162,14 @@ namespace cts_twister_api.handler
                         data.PlantProductionByHours = ((List<MDPlantProductionByHour>)await res.ReadAsync<MDPlantProductionByHour>());
                         data.PlantProductionByMachineTypes = ((List<MDPlantProductionByMachineType>)await res.ReadAsync<MDPlantProductionByMachineType>());
                         data.PlantProductionByMachine = ((List<MDPlantProductionByMachine>)await res.ReadAsync<MDPlantProductionByMachine>());
-             
+
                         response.Data = data;
                     }
                 }
             }
             catch (Exception ex)
             {
-                response.Result  = ResultResponse.error_exception;
+                response.Result = ResultResponse.error_exception;
                 response.Message = ex.Message;
             }
             finally
@@ -328,6 +328,55 @@ namespace cts_twister_api.handler
             }
             return response;
         }
+
+        public static async Task<MDResponse<int>> PostProductionDetailTadiff(MDProductionSerial data, string con)
+        {
+            var response = new MDResponse<int>();
+            var connection = new SqlConnection(con);
+            try
+            {
+                using (connection)
+                {
+                    var prms = new DynamicParameters();
+
+                    prms.Add("@idProduction", data.IdProduction);
+                    prms.Add("@serial", data.Serial);
+                    prms.Add("@lotCode", data.LotCode);
+                    prms.Add("@generalCode", data.General);
+                    prms.Add("@circuit", data.CircuitId);
+                    prms.Add("@wireSize", data.WireSize);
+                    prms.Add("@wireColor", data.WireColor);
+                    prms.Add("@wireType", data.WireType);
+                    prms.Add("@wireCutLenght", data.WireCutLength);
+
+                    prms.Add("@result", dbType: DbType.String, direction: ParameterDirection.Output, size: 5215585);
+                    prms.Add("@message", dbType: DbType.String, direction: ParameterDirection.Output, size: 5215585);
+
+                    int scopeId = await connection.QueryFirstOrDefaultAsync<int>("Sp_TWNV_PRODUCTION_INSERT_PRODUCTION_DETAIL_SERIAL", prms, commandType: CommandType.StoredProcedure);
+
+                    _ = Enum.TryParse(prms.Get<string>("@result"), out ResultResponse result);
+
+                    response.Result = result;
+                    response.Message = prms.Get<string>("@message");
+                    response.Data = scopeId;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Result = ResultResponse.error_exception;
+                response.Message = ex.Message;
+            }
+            finally
+            {
+                if (connection.State != ConnectionState.Closed)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+            }
+            return response;
+        }
+
 
 
         public static async Task<MDResponse<bool>> UpdateComment(MDComment data, string con)
