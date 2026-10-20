@@ -121,14 +121,14 @@ namespace cts_twister_api.defs
             #region MapGroup Kanban
             var mgKanban = app.MapGroup("/api/kanban").WithTags("Kanban");
 
-            mgKanban.MapGet("/GetKanbanInfo", async (string serial_tadiff) =>
+            mgKanban.MapGet("/GetKanbanInfo", async (string serial_tadiff, bool is_minitwister=false) =>
             {
-                return await KanbanHandler.GetKanbanInfo(serial_tadiff, conDB_TwisterSystem);
+                return await KanbanHandler.GetKanbanInfo(serial_tadiff, is_minitwister, conDB_TwisterSystem);
             });
 
-            mgKanban.MapGet("/GetKanbanCircuitInfo", async (string serial_tadiff) =>
+            mgKanban.MapGet("/GetKanbanCircuitInfo", async (string serial_tadiff, bool is_minitwister = false) =>
             {
-                return await KanbanHandler.GetKanbanCircuitInfo(serial_tadiff, conDB_TwisterSystem);
+                return await KanbanHandler.GetKanbanCircuitInfo(serial_tadiff,is_minitwister, conDB_TwisterSystem);
             });
 
             #endregion

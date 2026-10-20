@@ -341,7 +341,7 @@ namespace cts_twister_api.handler
                     prms.Add("@serial", data.Serial);
                     prms.Add("@idProceso", data.IdProcess);
                     prms.Add("@esquematicoName", data.EsquemticoName);
-                    prms.Add("@employeeNo", data.EmployeeNo);
+                    prms.Add("@isMTW", data.IsMiniTwister);
 
                     prms.Add("@result", dbType: DbType.String, direction: ParameterDirection.Output, size: 5215585);
                     prms.Add("@message", dbType: DbType.String, direction: ParameterDirection.Output, size: 5215585);

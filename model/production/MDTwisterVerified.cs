@@ -7,5 +7,7 @@
         public string Serial { get; set; }
         public string IdProcess { get; set; }
         public string EsquemticoName { get; set; }
+        public bool IsMiniTwister { get; set; } = false;
+
     }
 }

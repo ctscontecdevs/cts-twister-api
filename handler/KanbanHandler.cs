@@ -10,7 +10,7 @@ namespace cts_twister_api.handler
 {
     public class KanbanHandler
     {
-        public static async Task<MDResponse<MDKanbanInfo>> GetKanbanInfo(string serial_tadiff, string con)
+        public static async Task<MDResponse<MDKanbanInfo>> GetKanbanInfo(string serial_tadiff,bool is_minitwister, string con)
         {
             var connection = new SqlConnection(con);
             var res = new MDResponse<MDKanbanInfo>();
@@ -21,6 +21,7 @@ namespace cts_twister_api.handler
                 {
                     var prms = new DynamicParameters();
                     prms.Add("@serialTadiff", serial_tadiff);
+                    prms.Add("@isMTW", is_minitwister);
                     prms.Add("@result", dbType: DbType.String, direction: ParameterDirection.Output, size: 5215585);
                     prms.Add("@message", dbType: DbType.String, direction: ParameterDirection.Output, size: 5215585);
 
@@ -56,7 +57,7 @@ namespace cts_twister_api.handler
             return res;
         }
 
-        public static async Task<MDResponse<MDCircuirtInformation>> GetKanbanCircuitInfo(string serial_tadiff, string con)
+        public static async Task<MDResponse<MDCircuirtInformation>> GetKanbanCircuitInfo(string serial_tadiff, bool is_minitwister, string con)
         {
             var connection = new SqlConnection(con);
             var res = new MDResponse<MDCircuirtInformation>();
@@ -66,6 +67,7 @@ namespace cts_twister_api.handler
                 {
                     var prms = new DynamicParameters();
                     prms.Add("@serialTadiff", serial_tadiff);
+                    prms.Add("@isMTW", is_minitwister);
                     prms.Add("@result", dbType: DbType.String, direction: ParameterDirection.Output, size: 5215585);
                     prms.Add("@message", dbType: DbType.String, direction: ParameterDirection.Output, size: 5215585);
 
