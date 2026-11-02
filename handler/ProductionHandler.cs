@@ -1,5 +1,6 @@
 ﻿using cts_twister_api.model;
 using cts_twister_api.model.employee;
+using cts_twister_api.model.lotcode;
 using cts_twister_api.model.production;
 using cts_twister_api.model.shift;
 using Dapper;
@@ -12,6 +13,8 @@ namespace cts_twister_api.handler
 {
     public class ProductionHandler
     {
+        #region GET
+
         public static async Task<MDResponse<List<MDHourByHourReport>>> GetHourByHourReportByMachine(string shift, string station, string plant, string con)
         {
             var res = new MDResponse<List<MDHourByHourReport>>();
@@ -179,7 +182,6 @@ namespace cts_twister_api.handler
             return res;
         }
 
-
         public static async Task<MDResponse<MDPlantProduction>> GetPlantProductionReport(DateTime report_date, string con)
         {
             var connection = new SqlConnection(con);
@@ -225,6 +227,94 @@ namespace cts_twister_api.handler
             return response;
         }
 
+
+        public static async Task<MDResponse<List<MDAdvanceByLotCode>>> GetAdvanceCcKitsProdPackByLoteCode(string con)
+        {
+            var res = new MDResponse<List<MDAdvanceByLotCode>>();
+            var connection = new SqlConnection(con);
+
+            try
+            {
+                using (connection)
+                {
+                    var prms = new DynamicParameters();
+                    SqlMapper.Settings.CommandTimeout = 0;
+
+                    prms.Add("@result", dbType: DbType.String, direction: ParameterDirection.Output, size: 5215585);
+                    prms.Add("@message", dbType: DbType.String, direction: ParameterDirection.Output, size: 5215585);
+
+                    List<MDAdvanceByLotCode> data = [.. (await connection.QueryAsync<MDAdvanceByLotCode>("Sp_KPI_GET_Advance_CC_KITS_PROD_PACK_ByLoteCode", prms, commandType: CommandType.StoredProcedure))];
+
+                    _ = Enum.TryParse(prms.Get<string>("@result"), out ResultResponse result);
+
+                    res.Result = result;
+                    res.Message = prms.Get<string>("@message");
+                    res.Data = data;
+                }
+            }
+            catch (Exception ex)
+            {
+                res.Result = ResultResponse.error_exception;
+                res.Message = ex.Message;
+            }
+            finally
+            {
+                if (connection.State != ConnectionState.Closed)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+            }
+            return res;
+        }
+
+
+        public static async Task<MDResponse<List<MDAdvanceByLotCodeDetail>>> GetAdvanceCcKitsProdPackByLoteCodeDetail(string lot_code,string con)
+        {
+            var res = new MDResponse<List<MDAdvanceByLotCodeDetail>>();
+            var connection = new SqlConnection(con);
+
+            try
+            {
+                using (connection)
+                {
+                    var prms = new DynamicParameters();
+                    SqlMapper.Settings.CommandTimeout = 0;
+
+                    prms.Add("@lotCode", lot_code);
+
+                    prms.Add("@result", dbType: DbType.String, direction: ParameterDirection.Output, size: 5215585);
+                    prms.Add("@message", dbType: DbType.String, direction: ParameterDirection.Output, size: 5215585);
+
+                    List<MDAdvanceByLotCodeDetail> data = [.. (await connection.QueryAsync<MDAdvanceByLotCodeDetail>("Sp_KPI_GET_Advance_CC_KITS_PROD_PACK_ByLoteCode_detail", prms, commandType: CommandType.StoredProcedure))];
+
+                    _ = Enum.TryParse(prms.Get<string>("@result"), out ResultResponse result);
+
+                    res.Result = result;
+                    res.Message = prms.Get<string>("@message");
+                    res.Data = data;
+                }
+            }
+            catch (Exception ex)
+            {
+                res.Result = ResultResponse.error_exception;
+                res.Message = ex.Message;
+            }
+            finally
+            {
+                if (connection.State != ConnectionState.Closed)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+            }
+            return res;
+        }
+
+
+        #endregion
+
+        #region POST
 
         public static async Task<MDResponse<int>> PostProduction(MDProduction data, MDHostInfo hostInfo, string con)
         {
@@ -419,7 +509,9 @@ namespace cts_twister_api.handler
             return response;
         }
 
+        #endregion
 
+        #region PUT
 
         public static async Task<MDResponse<bool>> UpdateComment(MDComment data, string con)
         {
@@ -462,6 +554,8 @@ namespace cts_twister_api.handler
             return response;
         }
 
+
+        #endregion
 
     }
 }

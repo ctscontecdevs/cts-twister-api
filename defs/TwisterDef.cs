@@ -58,12 +58,15 @@ namespace cts_twister_api.defs
             #endregion
 
             #region MapGroup Production
+
             var mgProduction = app.MapGroup("/api/production").WithTags("Production");
 
+            #region GET
+
             mgProduction.MapGet("/GetHourByHourReportByMachine", async (string shift, string station, string plant) =>
-            {
-                return await ProductionHandler.GetHourByHourReportByMachine(shift, station, plant, conDB_TwisterSystem);
-            });
+              {
+                  return await ProductionHandler.GetHourByHourReportByMachine(shift, station, plant, conDB_TwisterSystem);
+              });
 
             mgProduction.MapGet("/GetHourKPIByMachine", async (string station, string plant) =>
             {
@@ -82,22 +85,40 @@ namespace cts_twister_api.defs
                 return await ProductionHandler.GetProductionReportByDate(machine_id, report_date, conDB_TwisterSystem);
             });
 
-            mgProduction.MapGet("/GetPlantProductionReport", async (DateTime report_date ) =>
+            mgProduction.MapGet("/GetPlantProductionReport", async (DateTime report_date) =>
             {
-                return await ProductionHandler.GetPlantProductionReport(report_date,  conDB_TwisterSystem);
+                return await ProductionHandler.GetPlantProductionReport(report_date, conDB_TwisterSystem);
             });
 
-            mgProduction.MapPut("/Comment", async (MDComment data ) =>
-            {              
-                return await ProductionHandler.UpdateComment(data, conDB_TwisterSystem);
+            mgProduction.MapGet("/GetAdvanceCcKitsProdPackByLoteCode", async () =>
+            {
+                return await ProductionHandler.GetAdvanceCcKitsProdPackByLoteCode(  conDB_TwisterSystem);
             });
+
+            mgProduction.MapGet("/GetAdvanceCcKitsProdPackByLoteCodeDetail", async (string lot_code) =>
+            {
+                return await ProductionHandler.GetAdvanceCcKitsProdPackByLoteCodeDetail(lot_code,conDB_TwisterSystem);
+            });
+
+            #endregion
+
+            #region PUT
+
+            mgProduction.MapPut("/Comment", async (MDComment data) =>
+               {
+                   return await ProductionHandler.UpdateComment(data, conDB_TwisterSystem);
+               });
+
+            #endregion
+
+            #region POST
 
             mgProduction.MapPost("/", async (MDProduction data, HttpContext httpContext) =>
-            {
-                var hostInfo = ResHost.GetHostInfo(httpContext);
+               {
+                   var hostInfo = ResHost.GetHostInfo(httpContext);
 
-                return await ProductionHandler.PostProduction(data, hostInfo, conDB_TwisterSystem);
-            });
+                   return await ProductionHandler.PostProduction(data, hostInfo, conDB_TwisterSystem);
+               });
 
             mgProduction.MapPost("/ProductionDetail", async (MDProductionDetail data, HttpContext httpContext) =>
             {
@@ -114,7 +135,9 @@ namespace cts_twister_api.defs
             mgProduction.MapPost("/PostProductionDetailTadiff", async (MDProductionSerial data) =>
             {
                 return await ProductionHandler.PostProductionDetailTadiff(data, conDB_TwisterSystem);
-            });
+            }); 
+
+            #endregion
 
             #endregion
 
