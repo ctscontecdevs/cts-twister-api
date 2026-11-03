@@ -227,7 +227,6 @@ namespace cts_twister_api.handler
             return response;
         }
 
-
         public static async Task<MDResponse<List<MDAdvanceByLotCode>>> GetAdvanceCcKitsProdPackByLoteCode(string con)
         {
             var res = new MDResponse<List<MDAdvanceByLotCode>>();
@@ -267,7 +266,6 @@ namespace cts_twister_api.handler
             }
             return res;
         }
-
 
         public static async Task<MDResponse<List<MDAdvanceByLotCodeDetail>>> GetAdvanceCcKitsProdPackByLoteCodeDetail(string lot_code,string con)
         {
